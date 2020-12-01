@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.4.0</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <groupId>net.pardini.schema</groupId>
+    <artifactId>libvirt-domain</artifactId>
+    <version>0.0.1</version>
+    <name>libvirt-domain</name>
+    <description>A damned XSD/Model for Libvirt domains; inferred from XML examples.</description>
+
+    <properties>
+        <java.version>11</java.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.libvirt</groupId>
+            <artifactId>libvirt</artifactId>
+            <version>0.5.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>5.6.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>2.3.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+            <version>2.3.3</version>
+        </dependency>
+
+    </dependencies>
+
+    <!--
+    Trang:
+
+    rm -rf src/main/trang; mkdir -p src/main/trang ; cd src/main/trang ; trang -I xml -O xsd ../examples/*.xml domain.xsd; cd -
+
+    @TODO: trang is really not a good inferrer, although it generates working schemas; I think jsonschema2pojo does a better job with JSONs
+
+    @TODO: trang is available in maven. We could use it directly somehow.
+    https://mvnrepository.com/artifact/org.relaxng/trang
+    <dependency>
+        <groupId>org.relaxng</groupId>
+        <artifactId>trang</artifactId>
+        <version>20181222</version>
+    </dependency>
+    -->
+
+
+    <build>
+        <plugins>
+
+            <!-- JVNET + jaxb2-rich-contract-plugin -->
+            <!-- https://github.com/highsource/maven-jaxb2-plugin/wiki/Configuration-Cheat-Sheet -->
+            <!-- https://github.com/mklemm/jaxb2-rich-contract-plugin -->
+            <plugin>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
+                <version>0.14.0</version>
+                <executions>
+                    <execution>
+                        <id>xsd-generate</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <generatePackage>net.pardini.libvirt.domain</generatePackage>
+                    <schemaDirectory>src/main/trang</schemaDirectory>
+                    <schemaIncludes>
+                        <schemaInclude>domain.xsd</schemaInclude>
+                    </schemaIncludes>
+                    <strict>true</strict>
+                    <verbose>true</verbose>
+                    <extension>true</extension>
+                    <removeOldOutput>true</removeOldOutput>
+                    <args>
+                        <arg>-XautoNameResolution</arg> <!-- creates "Os2" and such bizarre stuff. -->
+                        <arg>-Xfluent-builder</arg>
+                        <arg>-Xclone</arg>
+                        <arg>-Xcopy</arg>
+                    </args>
+                    <plugins>
+                        <plugin>
+                            <groupId>net.codesup.util</groupId>
+                            <artifactId>jaxb2-rich-contract-plugin</artifactId>
+                            <version>2.0.1</version>
+                        </plugin>
+                    </plugins>
+                </configuration>
+            </plugin>
+
+
+            <!-- CXF  + jaxb-fluent-api -->
+            <!--<plugin>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-xjc-plugin</artifactId>
+                <version>3.3.1</version>
+
+                <configuration>
+                    <extensions>
+                        <extension>net.java.dev.jaxb2-commons:jaxb-fluent-api:2.1.8</extension>
+                    </extensions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>generate-xsd-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>xsdtojava</goal>
+                        </goals>
+                        <configuration>
+                            <sourceRoot>${basedir}/target/generated-sources/cxf-xjc/</sourceRoot>
+                            <xsdOptions>
+                                <xsdOption>
+                                    <xsd>${basedir}/src/main/trang/domain.xsd</xsd>
+                                    <packagename>net.pardini.libvirt.domain</packagename>
+                                    <extensionArgs>
+                                        <extensionArg>-XautoNameResolution</extensionArg>
+                                        <extensionArg>-Xfluent-api</extensionArg>
+                                    </extensionArgs>
+                                </xsdOption>
+                            </xsdOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+
+
+            <!-- ORG.JVNET -->
+            <!--
+                        <plugin>
+                            <groupId>org.jvnet.jaxb2.maven2</groupId>
+                            <artifactId>maven-jaxb23-plugin</artifactId>
+                            <version>0.14.0</version>
+                            <executions>
+                                <execution>
+                                    <configuration>
+                                        <schemaIncludes>qemu.xsd</schemaIncludes>
+                                    </configuration>
+                                    <goals>
+                                        <goal>generate</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+            -->
+
+            <!-- CODEHAUS -->
+            <!--            <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>jaxb2-maven-plugin</artifactId>
+                            <version>2.5.0</version>
+
+                            <executions>
+                                <execution>
+                                    <id>xjc</id>
+                                    <goals>
+                                        <goal>xjc</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                            <configuration>
+                                <verbose>true</verbose>
+                                &lt;!&ndash; The package of your generated sources &ndash;&gt;
+                                <packageName>com.example.myschema</packageName>
+                                &lt;!&ndash; Indicate that we should use DTD input instead of XSDs &ndash;&gt;
+                                <sourceType>RelaxNGCompact</sourceType>
+
+                                &lt;!&ndash; Define the directory where we should find the DTD files &ndash;&gt;
+                                <sources>
+                                    <source>src/main/resources</source>
+                                </sources>
+                            </configuration>
+                        </plugin>-->
+
+        </plugins>
+    </build>
+
+</project>

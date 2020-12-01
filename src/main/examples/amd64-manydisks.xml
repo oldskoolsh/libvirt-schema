@@ -1,0 +1,73 @@
+<domain type='kvm'>
+    <name>smthlonger.some.example.com</name>
+    <memory unit='KiB'>4194304</memory>
+    <currentMemory unit='KiB'>4194304</currentMemory>
+    <vcpu>4</vcpu> <!-- placement='static' -->
+
+
+    <os>
+        <type arch='x86_64' machine='pc-i440fx-focal'>hvm</type>
+        <kernel>/mnt/vms/01.first/smthlonger.some.example.com_kernel.img</kernel>
+        <initrd>/mnt/vms/01.first/smthlonger.some.example.com_initrd.img</initrd>
+        <cmdline>console=ttyS0,115200n8 root=/dev/vda1 ro net.ifnames=0 biosdevname=0 ds=nocloud-net;s=https://xxx/</cmdline>
+        <boot dev='hd'/>
+    </os>
+
+    <cpu mode='host-model'>
+    </cpu>
+
+    <features>
+        <acpi/>
+        <apic/>
+        <pae/>
+    </features>
+    <metadata>
+        <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
+            <libosinfo:os id="http://ubuntu.com/ubuntu/20.04"/>
+        </libosinfo:libosinfo>
+    </metadata>
+
+    <clock offset='utc'/>
+    <on_poweroff>destroy</on_poweroff>
+    <on_reboot>restart</on_reboot>
+    <on_crash>restart</on_crash>
+    <devices>
+        <emulator>/usr/bin/kvm-spice</emulator>
+        <video>
+            <model type='none' />
+        </video>
+
+        <disk type='file' device='disk' model='virtio-non-transitional'>
+            <driver name='qemu' type='qcow2' cache='unsafe'/>
+            <source file='/mnt/vms/01.first/smthlonger.some.example.com_shadow.img'/>
+            <target dev='vda' bus='virtio'/>
+        </disk>
+
+        <disk type='file' device='disk' model='virtio-non-transitional'><driver name='qemu' type='qcow2' cache='unsafe'/><source file='/mnt/vms/02.second/smthlonger.some.example.com_disk2.img'/><target dev='vdb' bus='virtio'/></disk>
+        <disk type='file' device='disk' model='virtio-non-transitional'><driver name='qemu' type='qcow2' cache='unsafe'/><source file='/mnt/vms/03.third/smthlonger.some.example.com_disk3.img'/><target dev='vdc' bus='virtio'/></disk>
+        <disk type='file' device='disk' model='virtio-non-transitional'><driver name='qemu' type='qcow2' cache='unsafe'/><source file='/mnt/vms/04.fourth/smthlonger.some.example.com_disk4.img'/><target dev='vdd' bus='virtio'/></disk>
+
+        <interface type='bridge'>
+            <mac address='00:15:5D:00:00:02'/>
+            <source bridge='lan'/>
+            <model type='virtio'/>
+        </interface>
+
+        <controller type='usb' model='none'/>
+
+        <serial type='pty'><target port='0'/></serial>
+        <console type='pty'><target type='serial' port='0'/></console>
+        <memballoon model='virtio-non-transitional'/>
+
+        <channel type='unix'>
+            <target type='virtio' name='org.qemu.guest_agent.0'/>
+        </channel>
+
+        <rng model='virtio'>
+            <backend model='random'>/dev/urandom</backend>
+            <driver model='virtio-non-transitional'/>
+        </rng>
+        <input type='mouse' bus='virtio'/>
+        <input type='keyboard' bus='virtio'/>
+    </devices>
+</domain>
