@@ -5,6 +5,8 @@ import org.libvirt.Connect;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
 import java.io.StringWriter;
 
 public class LibVirtDomain {
@@ -17,11 +19,17 @@ public class LibVirtDomain {
 
         try {
             Connect connect = new Connect("qemu:///system");
-            org.libvirt.Domain lookedUpDomain = connect.domainLookupByName("smthlonger2.some.example.com");
-            System.out.println(lookedUpDomain);
+            for (String oneDomain : connect.listDefinedDomains()) {
+                org.libvirt.Domain lookedUpDomain = connect.domainLookupByName(oneDomain);
+                System.out.println(lookedUpDomain);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Domain.Builder<Void> domainBuilder() {
+        return Domain.builder();
     }
 
     public static String domainToXMLStr(Domain domain) {
@@ -33,7 +41,17 @@ public class LibVirtDomain {
             jaxbMarshaller.marshal(domain, sw);
             return sw.toString();
         } catch (JAXBException e) {
-            throw new RuntimeException("JAXB failure with LibVirt Model: " + e.getMessage(), e);
+            throw new RuntimeException("JAXB write failure with LibVirt Model: " + e.getMessage(), e);
+        }
+    }
+
+    public static Domain xmlStrToDomain(String xml) {
+        try {
+            JAXBContext context = JAXBContext.newInstance(Domain.class);
+            Unmarshaller unmarshaller = context.createUnmarshaller();
+            return (Domain) unmarshaller.unmarshal(new StringReader(xml));
+        } catch (JAXBException e) {
+            throw new RuntimeException("JAXB read failure with LibVirt Model: " + e.getMessage(), e);
         }
     }
 }
