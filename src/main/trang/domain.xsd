@@ -7,7 +7,8 @@
       <xs:sequence>
         <xs:element ref="name"/>
         <xs:element minOccurs="0" ref="uuid"/>
-        <xs:choice maxOccurs="unbounded">
+        <!-- Why is this a choice? Check the example XMLs. -->
+        <!--<xs:choice maxOccurs="unbounded">-->
           <xs:element ref="cpu"/>
           <xs:element ref="currentMemory"/>
           <xs:element ref="features"/>
@@ -16,7 +17,7 @@
           <xs:element ref="os"/>
           <xs:element ref="resource"/>
           <xs:element ref="vcpu"/>
-        </xs:choice>
+        <!--</xs:choice>-->
         <xs:element ref="clock"/>
         <xs:element ref="on_poweroff"/>
         <xs:element ref="on_reboot"/>

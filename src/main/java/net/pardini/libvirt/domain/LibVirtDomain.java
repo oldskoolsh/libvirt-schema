@@ -12,6 +12,12 @@ import java.io.StringWriter;
 public class LibVirtDomain {
 
     public static void main(String[] args) {
+        Domain hmm = Domain.builder().withMetadata(
+                Metadata.builder().withLibosinfo().withOs().withId("os").end().end().build()
+        ).build();
+
+        Domain cpu = Domain.builder().build();
+
         Domain domain = Domain.builder().withType("kvm")
                 .withDevices(Devices.builder().addController(Controller.builder().withModelAttr("model atribute").withType("pci").withModel().withName("wtf").end().build()).build())
                 .build();
