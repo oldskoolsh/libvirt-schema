@@ -34,7 +34,7 @@
     <devices>
         <emulator>/usr/bin/kvm-spice</emulator>
         <video>
-            <model type='none' />
+            <model type='none'/>
         </video>
 
         <disk type='file' device='disk' model='virtio-non-transitional'>
@@ -43,9 +43,21 @@
             <target dev='vda' bus='virtio'/>
         </disk>
 
-        <disk type='file' device='disk' model='virtio-non-transitional'><driver name='qemu' type='qcow2' cache='unsafe'/><source file='/mnt/vms/02.second/smthlonger.some.example.com_disk2.img'/><target dev='vdb' bus='virtio'/></disk>
-        <disk type='file' device='disk' model='virtio-non-transitional'><driver name='qemu' type='qcow2' cache='unsafe'/><source file='/mnt/vms/03.third/smthlonger.some.example.com_disk3.img'/><target dev='vdc' bus='virtio'/></disk>
-        <disk type='file' device='disk' model='virtio-non-transitional'><driver name='qemu' type='qcow2' cache='unsafe'/><source file='/mnt/vms/04.fourth/smthlonger.some.example.com_disk4.img'/><target dev='vdd' bus='virtio'/></disk>
+        <disk type='file' device='disk' model='virtio-non-transitional'>
+            <driver name='qemu' type='qcow2' cache='unsafe'/>
+            <source file='/mnt/vms/02.second/smthlonger.some.example.com_disk2.img'/>
+            <target dev='vdb' bus='virtio'/>
+        </disk>
+        <disk type='file' device='disk' model='virtio-non-transitional'>
+            <driver name='qemu' type='qcow2' cache='unsafe'/>
+            <source file='/mnt/vms/03.third/smthlonger.some.example.com_disk3.img'/>
+            <target dev='vdc' bus='virtio'/>
+        </disk>
+        <disk type='file' device='disk' model='virtio-non-transitional'>
+            <driver name='qemu' type='qcow2' cache='unsafe'/>
+            <source file='/mnt/vms/04.fourth/smthlonger.some.example.com_disk4.img'/>
+            <target dev='vdd' bus='virtio'/>
+        </disk>
 
         <interface type='bridge'>
             <mac address='00:15:5D:00:00:02'/>
@@ -55,8 +67,12 @@
 
         <controller type='usb' model='none'/>
 
-        <serial type='pty'><target port='0'/></serial>
-        <console type='pty'><target type='serial' port='0'/></console>
+        <serial type='pty'>
+            <target port='0'/>
+        </serial>
+        <console type='pty'>
+            <target type='serial' port='0'/>
+        </console>
         <memballoon model='virtio-non-transitional'/>
 
         <channel type='unix'>
