@@ -1,13 +1,15 @@
 <domain type='qemu'>
     <name>smthlonger2.some.example.com</name>
-    <memory unit='KiB'>4194304</memory>
+    <cpu mode='custom' match='exact'>
+        <model fallback='allow'>cortex-a72</model>
+    </cpu>
     <currentMemory unit='KiB'>4194304</currentMemory>
-    <vcpu>4</vcpu> <!-- placement='static' -->
+    <features>
+        <gic version='2'/>
+    </features>
 
+    <memory unit='KiB'>4194304</memory>
 
-    <resource>
-        <partition>/machine</partition>
-    </resource>
     <os>
         <type arch='aarch64' machine='virt-4.2'>hvm</type>
         <kernel>/mnt/vms/01.first/smthlonger2.some.example.com_kernel.img</kernel>
@@ -16,12 +18,13 @@
             ds=nocloud-net;s=https://xxx/
         </cmdline>
     </os>
-    <features>
-        <gic version='2'/>
-    </features>
-    <cpu mode='custom' match='exact'>
-        <model fallback='allow'>cortex-a72</model>
-    </cpu>
+
+    <resource>
+        <partition>/machine</partition>
+    </resource>
+
+    <vcpu>4</vcpu> <!-- placement='static' -->
+
     <metadata>
         <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
             <libosinfo:os id="http://ubuntu.com/ubuntu/20.04"/>
