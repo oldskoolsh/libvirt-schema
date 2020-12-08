@@ -62,29 +62,25 @@
   <xs:element name="features">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" ref="gic"/>
-        <xs:sequence minOccurs="0">
-          <xs:element ref="acpi"/>
-          <xs:element ref="apic"/>
-        </xs:sequence>
+        <xs:element minOccurs="0" ref="acpi"/>
+        <xs:element minOccurs="0" ref="apic"/>
+        <xs:element minOccurs="0" ref="pae"/>
         <xs:element minOccurs="0" ref="hyperv"/>
         <xs:element minOccurs="0" ref="kvm"/>
         <xs:choice minOccurs="0">
-          <xs:element ref="pae"/>
+          <xs:element ref="gic"/>
           <xs:element ref="vmport"/>
         </xs:choice>
       </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="gic">
-    <xs:complexType>
-      <xs:attribute name="version" use="required" type="xs:integer"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="acpi">
     <xs:complexType/>
   </xs:element>
   <xs:element name="apic">
+    <xs:complexType/>
+  </xs:element>
+  <xs:element name="pae">
     <xs:complexType/>
   </xs:element>
   <xs:element name="hyperv">
@@ -131,8 +127,10 @@
       <xs:attribute name="state" use="required" type="xs:NCName"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="pae">
-    <xs:complexType/>
+  <xs:element name="gic">
+    <xs:complexType>
+      <xs:attribute name="version" use="required" type="xs:integer"/>
+    </xs:complexType>
   </xs:element>
   <xs:element name="vmport">
     <xs:complexType>
@@ -161,13 +159,13 @@
         <xs:element ref="type"/>
         <xs:choice>
           <xs:sequence>
-            <xs:element ref="loader"/>
-            <xs:element ref="nvram"/>
-          </xs:sequence>
-          <xs:sequence>
             <xs:element ref="kernel"/>
             <xs:element ref="initrd"/>
             <xs:element ref="cmdline"/>
+          </xs:sequence>
+          <xs:sequence>
+            <xs:element ref="loader"/>
+            <xs:element ref="nvram"/>
           </xs:sequence>
         </xs:choice>
         <xs:element minOccurs="0" ref="boot"/>
@@ -185,6 +183,9 @@
       </xs:simpleContent>
     </xs:complexType>
   </xs:element>
+  <xs:element name="kernel" type="xs:string"/>
+  <xs:element name="initrd" type="xs:string"/>
+  <xs:element name="cmdline" type="xs:string"/>
   <xs:element name="loader">
     <xs:complexType mixed="true">
       <xs:attribute name="readonly" use="required" type="xs:NCName"/>
@@ -192,9 +193,6 @@
     </xs:complexType>
   </xs:element>
   <xs:element name="nvram" type="xs:string"/>
-  <xs:element name="kernel" type="xs:string"/>
-  <xs:element name="initrd" type="xs:string"/>
-  <xs:element name="cmdline" type="xs:string"/>
   <xs:element name="bootmenu">
     <xs:complexType>
       <xs:attribute name="enable" use="required" type="xs:NCName"/>
@@ -370,7 +368,7 @@
   <xs:element name="interface">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="mac"/>
+        <xs:element minOccurs="0" ref="mac"/>
         <xs:element ref="source"/>
         <xs:element ref="model"/>
         <xs:element minOccurs="0" ref="address"/>
@@ -404,7 +402,10 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element ref="backend"/>
-        <xs:element ref="driver"/>
+        <xs:choice>
+          <xs:element ref="address"/>
+          <xs:element ref="driver"/>
+        </xs:choice>
       </xs:sequence>
       <xs:attribute name="model" use="required" type="xs:NCName"/>
     </xs:complexType>

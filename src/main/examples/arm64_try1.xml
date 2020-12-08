@@ -1,0 +1,63 @@
+<domain xmlns:ns2="http://libosinfo.org/xmlns/libvirt/domain/1.0" type="qemu">
+    <name>demo.local</name>
+    <cpu match="exact" mode="custom">
+        <model fallback="allow">cortex-a72</model>
+    </cpu>
+    <currentMemory unit="KiB">4194304</currentMemory>
+    <features>
+        <gic version="2"/>
+    </features>
+    <memory unit="KiB">4194304</memory>
+    <metadata>
+        <ns2:libosinfo>
+            <ns2:os id="http://ubuntu.com/ubuntu/20.04"/>
+        </ns2:libosinfo>
+    </metadata>
+    <os>
+        <type arch="aarch64" machine="virt-4.2">hvm</type>
+        <kernel>/var/lib/libvirt/images/baseimages/ubuntu-hirsute-cloudimg-arm64_20201206.1_kernel.img</kernel>
+        <initrd>/var/lib/libvirt/images/baseimages/ubuntu-hirsute-cloudimg-arm64_20201206.1_initrd.img</initrd>
+        <cmdline>console=ttyS0,115200n8 root=/dev/vda1 ro net.ifnames=0 biosdevname=0 ds=nocloud-net;s=https://cloud-init.pardini.net/rpardini/oldskool-rpardini/master/base/params/bla=yes/dsnocloud/</cmdline>
+        <boot dev="hd"/>
+    </os>
+    <resource>
+        <partition>/machine</partition>
+    </resource>
+    <vcpu>2</vcpu>
+    <clock offset="utc"/>
+    <on_poweroff>destroy</on_poweroff>
+    <on_reboot>restart</on_reboot>
+    <on_crash>restart</on_crash>
+    <devices>
+        <emulator>/usr/bin/qemu-system-aarch64</emulator>
+        <disk device="disk" model="virtio-non-transitional" type="file">
+            <driver cache="unsafe" name="qemu" type="qcow2"/>
+            <source file="/var/lib/libvirt/images/demo.local/root__ubuntu_hirsute_arm64.qcow2"/>
+            <target bus="virtio" dev="vda"/>
+        </disk>
+        <video>
+            <model type="none"/>
+        </video>
+        <interface type="bridge">
+            <source bridge="lan"/>
+            <model type="virtio"/>
+        </interface>
+        <controller model="none" type="usb"/>
+        <serial type="pty">
+            <target port="0"/>
+        </serial>
+        <console type="pty">
+            <target port="0" type="serial"/>
+        </console>
+        <channel type="unix">
+            <target name="org.qemu.guest_agent.0" type="virtio"/>
+        </channel>
+        <rng model="virtio">
+            <backend model="random">/dev/urandom</backend>
+            <driver model="virtio-non-transitional"/>
+        </rng>
+        <memballoon model="virtio-non-transitional"/>
+        <input bus="virtio" type="mouse"/>
+        <input bus="virtio" type="keyboard"/>
+    </devices>
+</domain>
