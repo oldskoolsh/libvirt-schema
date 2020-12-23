@@ -63,19 +63,22 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" ref="acpi"/>
+        <xs:element minOccurs="0" ref="gic"/>
         <xs:element minOccurs="0" ref="apic"/>
         <xs:element minOccurs="0" ref="pae"/>
         <xs:element minOccurs="0" ref="hyperv"/>
         <xs:element minOccurs="0" ref="kvm"/>
-        <xs:choice minOccurs="0">
-          <xs:element ref="gic"/>
-          <xs:element ref="vmport"/>
-        </xs:choice>
+        <xs:element minOccurs="0" ref="vmport"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="acpi">
     <xs:complexType/>
+  </xs:element>
+  <xs:element name="gic">
+    <xs:complexType>
+      <xs:attribute name="version" use="required" type="xs:integer"/>
+    </xs:complexType>
   </xs:element>
   <xs:element name="apic">
     <xs:complexType/>
@@ -127,11 +130,6 @@
       <xs:attribute name="state" use="required" type="xs:NCName"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="gic">
-    <xs:complexType>
-      <xs:attribute name="version" use="required" type="xs:integer"/>
-    </xs:complexType>
-  </xs:element>
   <xs:element name="vmport">
     <xs:complexType>
       <xs:attribute name="state" use="required" type="xs:NCName"/>
@@ -159,13 +157,13 @@
         <xs:element ref="type"/>
         <xs:choice>
           <xs:sequence>
+            <xs:element ref="loader"/>
+            <xs:element ref="nvram"/>
+          </xs:sequence>
+          <xs:sequence>
             <xs:element ref="kernel"/>
             <xs:element ref="initrd"/>
             <xs:element ref="cmdline"/>
-          </xs:sequence>
-          <xs:sequence>
-            <xs:element ref="loader"/>
-            <xs:element ref="nvram"/>
           </xs:sequence>
         </xs:choice>
         <xs:element minOccurs="0" ref="boot"/>
@@ -183,9 +181,6 @@
       </xs:simpleContent>
     </xs:complexType>
   </xs:element>
-  <xs:element name="kernel" type="xs:string"/>
-  <xs:element name="initrd" type="xs:string"/>
-  <xs:element name="cmdline" type="xs:string"/>
   <xs:element name="loader">
     <xs:complexType mixed="true">
       <xs:attribute name="readonly" use="required" type="xs:NCName"/>
@@ -193,6 +188,9 @@
     </xs:complexType>
   </xs:element>
   <xs:element name="nvram" type="xs:string"/>
+  <xs:element name="kernel" type="xs:string"/>
+  <xs:element name="initrd" type="xs:string"/>
+  <xs:element name="cmdline" type="xs:string"/>
   <xs:element name="bootmenu">
     <xs:complexType>
       <xs:attribute name="enable" use="required" type="xs:NCName"/>
@@ -256,6 +254,7 @@
       <xs:sequence>
         <xs:element ref="emulator"/>
         <xs:choice maxOccurs="unbounded">
+          <xs:element ref="serial"/>
           <xs:element ref="channel"/>
           <xs:element ref="console"/>
           <xs:element ref="controller"/>
@@ -267,7 +266,6 @@
           <xs:element ref="memballoon"/>
           <xs:element ref="redirdev"/>
           <xs:element ref="rng"/>
-          <xs:element ref="serial"/>
           <xs:element ref="video"/>
         </xs:choice>
       </xs:sequence>
@@ -317,12 +315,18 @@
         <xs:element ref="driver"/>
         <xs:element ref="source"/>
         <xs:element ref="target"/>
+        <xs:element minOccurs="0" ref="readonly"/>
+        <xs:element minOccurs="0" ref="serial"/>
+        <xs:element minOccurs="0" ref="boot"/>
         <xs:element minOccurs="0" ref="address"/>
       </xs:sequence>
       <xs:attribute name="device" use="required" type="xs:NCName"/>
       <xs:attribute name="model" type="xs:NCName"/>
       <xs:attribute name="type" use="required" type="xs:NCName"/>
     </xs:complexType>
+  </xs:element>
+  <xs:element name="readonly">
+    <xs:complexType/>
   </xs:element>
   <xs:element name="graphics">
     <xs:complexType>
@@ -415,14 +419,6 @@
       <xs:attribute name="model" use="required" type="xs:NCName"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="serial">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="target"/>
-      </xs:sequence>
-      <xs:attribute name="type" use="required" type="xs:NCName"/>
-    </xs:complexType>
-  </xs:element>
   <xs:element name="video">
     <xs:complexType>
       <xs:sequence>
@@ -481,6 +477,14 @@
       <xs:attribute name="type" type="xs:NCName"/>
     </xs:complexType>
   </xs:element>
+  <xs:element name="serial">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="target"/>
+      </xs:sequence>
+      <xs:attribute name="type" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="address">
     <xs:complexType>
       <xs:attribute name="bus" use="required" type="xs:NMTOKEN"/>
@@ -490,7 +494,9 @@
       <xs:attribute name="multifunction" type="xs:NCName"/>
       <xs:attribute name="port" type="xs:integer"/>
       <xs:attribute name="slot" type="xs:NMTOKEN"/>
+      <xs:attribute name="target" type="xs:integer"/>
       <xs:attribute name="type" type="xs:NCName"/>
+      <xs:attribute name="unit" type="xs:integer"/>
     </xs:complexType>
   </xs:element>
 </xs:schema>
