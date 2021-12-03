@@ -5,7 +5,7 @@
 
     <groupId>com.github.oldskoolsh</groupId>
     <artifactId>libvirt-domain</artifactId>
-    <version>0.1.3</version>
+    <version>0.1.4</version>
     <name>libvirt-domain</name>
     <description>A damned XSD/Model for Libvirt domains; inferred from XML examples.</description>
 
