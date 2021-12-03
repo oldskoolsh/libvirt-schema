@@ -477,6 +477,7 @@
             <xs:attribute name="bridge" type="xs:NCName"/>
             <xs:attribute name="dev"/>
             <xs:attribute name="file"/>
+            <xs:attribute name="network" type="xs:NCName"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="target">
