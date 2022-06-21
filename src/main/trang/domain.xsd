@@ -382,6 +382,7 @@
                 <xs:element minOccurs="0" ref="mac"/>
                 <xs:element ref="source"/>
                 <xs:element ref="model"/>
+                <xs:element minOccurs="0" ref="link"/>
                 <xs:element minOccurs="0" ref="address"/>
             </xs:sequence>
             <xs:attribute name="type" use="required" type="xs:NCName"/>
@@ -390,6 +391,11 @@
     <xs:element name="mac">
         <xs:complexType>
             <xs:attribute name="address" use="required" type="xs:NMTOKEN"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="link">
+        <xs:complexType>
+            <xs:attribute name="state" use="required" type="xs:NCName"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="memballoon">
